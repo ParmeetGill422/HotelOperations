@@ -36,8 +36,6 @@ public class Main {
                     System.out.println("Invalid option. Try again.");
             }
         }
-
-        scanner.close();
     }
 
     private static void employeeMenu(Scanner scanner) {
