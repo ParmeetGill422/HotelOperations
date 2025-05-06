@@ -1,10 +1,12 @@
+import java.time.LocalDateTime;
+
 public class Employee {
     private String employeeId;
     private String name;
     private String department;
     private double payRate;
     private double hoursWorked;
-    private Double punchInTime = null;
+    private Double punchInTime = null; // stores time in decimal (e.g., 10.5 for 10:30am)
 
     public Employee(String employeeId, String name, String department, double payRate, double hoursWorked) {
         this.employeeId = employeeId;
@@ -26,15 +28,41 @@ public class Employee {
         return (getRegularHours() * payRate) + (getOvertimeHours() * payRate * 1.5);
     }
 
-    public void punchTimeCard(double time) {
-        if (punchInTime == null) {
-            punchInTime = time;
-            System.out.printf("%s punched in at %.2f\n", name, time);
-        } else {
+    // Overloaded: manual time input
+    public void punchIn(double time) {
+        punchInTime = time;
+        System.out.printf("%s manually punched in at %.2f\n", name, punchInTime);
+    }
+
+    public void punchOut(double time) {
+        if (punchInTime != null) {
             double worked = time - punchInTime;
             hoursWorked += worked;
-            System.out.printf("%s punched out at %.2f, worked %.2f hours.\n", name, time, worked);
+            System.out.printf("%s manually punched out at %.2f, worked %.2f hours\n", name, time, worked);
             punchInTime = null;
+        } else {
+            System.out.println("Error: No punch-in record found.");
+        }
+    }
+
+    // Overloaded: auto time using LocalDateTime
+    public void punchIn() {
+        LocalDateTime now = LocalDateTime.now();
+        punchInTime = now.getHour() + now.getMinute() / 60.0;
+        System.out.println(name + " auto punched in at " + String.format("%.2f", punchInTime));
+    }
+
+    public void punchOut() {
+        if (punchInTime != null) {
+            LocalDateTime now = LocalDateTime.now();
+            double punchOutTime = now.getHour() + now.getMinute() / 60.0;
+            double worked = punchOutTime - punchInTime;
+            hoursWorked += worked;
+            System.out.println(name + " auto punched out at " + String.format("%.2f", punchOutTime)
+                    + ", worked " + String.format("%.2f", worked) + " hours.");
+            punchInTime = null;
+        } else {
+            System.out.println("Error: No punch-in record found.");
         }
     }
 }
