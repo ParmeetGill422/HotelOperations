@@ -1,50 +1,36 @@
+import java.util.*;
+
 public class Hotel {
     private String name;
-    private int numberOfSuites;
-    private int numberOfRooms;
-    private int bookedSuites;
-    private int bookedBasicRooms;
+    private List<Room> rooms = new ArrayList<>();
 
-    // Constructor 1: sets default bookings to 0
-    public Hotel(String name, int numberOfSuites, int numberOfRooms) {
-        this.name = name;
-        this.numberOfSuites = numberOfSuites;
-        this.numberOfRooms = numberOfRooms;
-        this.bookedSuites = 0;
-        this.bookedBasicRooms = 0;
+    public Hotel(String name, int suiteCount, int basicCount) {
+        int roomNumber = 100;
+        for (int i = 0; i < suiteCount; i++) {
+            rooms.add(new Room(roomNumber++)); // suites
+        }
+        for (int i = 0; i < basicCount; i++) {
+            rooms.add(new Room(roomNumber++)); // basic
+        }
     }
 
-    // Constructor 2: sets bookings explicitly
-    public Hotel(String name, int numberOfSuites, int numberOfRooms, int bookedSuites, int bookedBasicRooms) {
-        this.name = name;
-        this.numberOfSuites = numberOfSuites;
-        this.numberOfRooms = numberOfRooms;
-        this.bookedSuites = bookedSuites;
-        this.bookedBasicRooms = bookedBasicRooms;
-    }
-
-    public boolean bookRoom(int numberOfRooms, boolean isSuite) {
-        if (isSuite) {
-            if (getAvailableSuites() >= numberOfRooms) {
-                bookedSuites += numberOfRooms;
-                return true;
-            }
-        } else {
-            if (getAvailableRooms() >= numberOfRooms) {
-                bookedBasicRooms += numberOfRooms;
-                return true;
+    public Room assignAvailableRoom() {
+        for (Room room : rooms) {
+            if (room.isAvailable()) {
+                room.checkIn();
+                return room;
             }
         }
-        return false;
+        return null;
     }
 
-    // Derived getter for available suites
-    public int getAvailableSuites() {
-        return numberOfSuites - bookedSuites;
-    }
-
-    // Derived getter for available basic rooms
-    public int getAvailableRooms() {
-        return numberOfRooms - bookedBasicRooms;
+    public void notifyRoomCheckout(int roomNumber) {
+        for (Room room : rooms) {
+            if (room.getRoomNumber() == roomNumber) {
+                room.checkOut();
+                System.out.println("Housekeeping notified: Room " + roomNumber + " needs cleaning.");
+                return;
+            }
+        }
     }
 }

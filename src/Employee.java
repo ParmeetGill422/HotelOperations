@@ -6,14 +6,14 @@ public class Employee {
     private String department;
     private double payRate;
     private double hoursWorked;
-    private Double punchInTime = null; // stores time in decimal (e.g., 10.5 for 10:30am)
+    private Double punchInTime = null;
 
-    public Employee(String employeeId, String name, String department, double payRate, double hoursWorked) {
+    public Employee(String employeeId, String name, String department, double payRate) {
         this.employeeId = employeeId;
         this.name = name;
         this.department = department;
         this.payRate = payRate;
-        this.hoursWorked = hoursWorked;
+        this.hoursWorked = 0.0;
     }
 
     public double getRegularHours() {
@@ -28,10 +28,10 @@ public class Employee {
         return (getRegularHours() * payRate) + (getOvertimeHours() * payRate * 1.5);
     }
 
-    // Overloaded: manual time input
+    // Manual time entry
     public void punchIn(double time) {
         punchInTime = time;
-        System.out.printf("%s manually punched in at %.2f\n", name, punchInTime);
+        System.out.printf("%s manually punched in at %.2f\n", name, time);
     }
 
     public void punchOut(double time) {
@@ -41,11 +41,11 @@ public class Employee {
             System.out.printf("%s manually punched out at %.2f, worked %.2f hours\n", name, time, worked);
             punchInTime = null;
         } else {
-            System.out.println("Error: No punch-in record found.");
+            System.out.println("No punch-in found.");
         }
     }
 
-    // Overloaded: auto time using LocalDateTime
+    // Auto time
     public void punchIn() {
         LocalDateTime now = LocalDateTime.now();
         punchInTime = now.getHour() + now.getMinute() / 60.0;
@@ -62,7 +62,15 @@ public class Employee {
                     + ", worked " + String.format("%.2f", worked) + " hours.");
             punchInTime = null;
         } else {
-            System.out.println("Error: No punch-in record found.");
+            System.out.println("No punch-in found.");
+        }
+    }
+
+    public void punchTimeCard(double time) {
+        if (punchInTime == null) {
+            punchIn(time);
+        } else {
+            punchOut(time);
         }
     }
 }

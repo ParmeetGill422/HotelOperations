@@ -1,22 +1,33 @@
 public class Room {
-    private int numberOfBeds;
-    private double price;
+    private int roomNumber;
     private boolean occupied;
     private boolean dirty;
 
-    public Room(int numberOfBeds, double price, boolean occupied, boolean dirty) {
-        this.numberOfBeds = numberOfBeds;
-        this.price = price;
-        this.occupied = occupied;
-        this.dirty = dirty;
+    public Room(int roomNumber) {
+        this.roomNumber = roomNumber;
+        this.occupied = false;
+        this.dirty = false;
     }
 
-    public int getNumberOfBeds() {
-        return numberOfBeds;
+    public void checkIn() {
+        if (!occupied && !dirty) {
+            occupied = true;
+            dirty = true;
+        }
     }
 
-    public double getPrice() {
-        return price;
+    public void checkOut() {
+        occupied = false;
+    }
+
+    public void cleanRoom() {
+        if (!occupied) {
+            dirty = false;
+        }
+    }
+
+    public boolean isAvailable() {
+        return !occupied && !dirty;
     }
 
     public boolean isOccupied() {
@@ -27,37 +38,7 @@ public class Room {
         return dirty;
     }
 
-    public boolean isAvailable() {
-        return !occupied && !dirty;
-    }
-
-    public void checkIn() {
-        if (isAvailable()) {
-            occupied = true;
-            dirty = true;
-            System.out.println("Guest checked in.");
-        } else {
-            System.out.println("Room not available for check-in.");
-        }
-    }
-
-    public void checkOut() {
-        if (occupied) {
-            occupied = false;
-            System.out.println("Guest checked out. Room needs cleaning.");
-        } else {
-            System.out.println("Room is not occupied.");
-        }
-    }
-
-    public void cleanRoom() {
-        if (!occupied && dirty) {
-            dirty = false;
-            System.out.println("Room cleaned.");
-        } else if (occupied) {
-            System.out.println("Room is occupied. Cannot clean now.");
-        } else {
-            System.out.println("Room is already clean.");
-        }
+    public int getRoomNumber() {
+        return roomNumber;
     }
 }

@@ -7,33 +7,35 @@ public class RoomTest {
 
     @Before
     public void setup() {
-        room = new Room(2, 120.0, false, false);
+        room = new Room(101);
     }
 
     @Test
-    public void testCheckInMakesRoomOccupiedAndDirty() {
+    public void testCheckInSetsOccupiedAndDirty() {
         room.checkIn();
         assertTrue(room.isOccupied());
         assertTrue(room.isDirty());
     }
 
     @Test
-    public void testCheckInFailsIfOccupied() {
-        room = new Room(2, 120.0, true, false);
-        room.checkIn();
-        assertTrue(room.isOccupied());
-    }
-
-    @Test
-    public void testCheckInFailsIfDirty() {
-        room = new Room(2, 120.0, false, true);
-        room.checkIn();
+    public void testCheckInFailsIfAlreadyOccupied() {
+        room.checkIn(); // first check-in
+        room.checkOut(); // still dirty
+        room.checkIn(); // should not allow check-in
         assertFalse(room.isOccupied());
     }
 
     @Test
-    public void testCheckOut() {
-        room = new Room(2, 120.0, true, true);
+    public void testCheckInFailsIfDirty() {
+        room.checkIn();
+        room.checkOut(); // now room is dirty
+        room.checkIn(); // should fail
+        assertFalse(room.isOccupied());
+    }
+
+    @Test
+    public void testCheckOutMarksRoomUnoccupied() {
+        room.checkIn();
         room.checkOut();
         assertFalse(room.isOccupied());
         assertTrue(room.isDirty());
@@ -41,15 +43,16 @@ public class RoomTest {
 
     @Test
     public void testCleanRoomSuccess() {
-        room = new Room(2, 120.0, false, true);
+        room.checkIn();
+        room.checkOut();
         room.cleanRoom();
         assertFalse(room.isDirty());
     }
 
     @Test
-    public void testCannotCleanIfOccupied() {
-        room = new Room(2, 120.0, true, true);
-        room.cleanRoom();
+    public void testCleanRoomFailsIfOccupied() {
+        room.checkIn();
+        room.cleanRoom(); // should not clean
         assertTrue(room.isDirty());
     }
 }

@@ -1,50 +1,20 @@
 public class Reservation {
-    public String roomType;
-    public int numberOfnights;
+    private String roomType; // king or double
+    private int nights;
     private boolean isWeekend;
 
-    public Reservation(String roomType, int numberOfnights, boolean isWeekend){
-        this.roomType = roomType;
-        this.numberOfnights = numberOfnights;
+    public Reservation(String roomType, int nights, boolean isWeekend) {
+        this.roomType = roomType.toLowerCase();
+        this.nights = nights;
         this.isWeekend = isWeekend;
     }
 
-    public String getRoomType() {
-        return roomType;
+    public double getPricePerNight() {
+        double base = roomType.equals("king") ? 139.0 : 124.0;
+        return isWeekend ? base * 1.10 : base;
     }
 
-    public void setRoomType(String roomType) {
-        this.roomType = roomType;
-    }
-
-    public int getNumberOfnights() {
-        return numberOfnights;
-    }
-
-    public void setNumberOfnights(int numberOfnights) {
-        this.numberOfnights = numberOfnights;
-    }
-
-    public boolean isWeekend() {
-        return isWeekend;
-    }
-
-    public void setWeekend(boolean weekend) {
-        isWeekend = weekend;
-    }
-    public double getPrice(){
-        double basePrice = 0;
-        if (roomType.equals("king")){
-            basePrice = 139.00;
-        }else if (roomType.equals("double")){
-            basePrice = 124.00;
-        }
-        if (isWeekend){
-            basePrice *= 1.10;
-        }
-        return basePrice;
-    }
-    public double getReservationtotal(){
-        return getPrice() * numberOfnights;
+    public double getTotal() {
+        return getPricePerNight() * nights;
     }
 }
